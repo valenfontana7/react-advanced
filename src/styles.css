@@ -1,0 +1,615 @@
+:root {
+  --bg: #f7f8fb;
+  --accent: #1e90ff;
+  --muted: #666;
+  --card-bg: #ffffff;
+  --surface: #f3f6fb;
+  --text: #0f1720;
+  --radius: 12px;
+}
+
+body {
+  font-family: Inter, "Segoe UI", Arial, system-ui;
+  background: var(--bg);
+  color: #111;
+  margin: 0;
+  padding: 0;
+}
+
+/* Make sizing predictable and prevent children from escaping container widths */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.app {
+  max-width: 980px;
+  margin: 26px auto;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, #f6f8fb 0%, #ffffff 100%);
+  color: var(--text);
+  overflow-x: hidden; /* prevent children from causing horizontal scroll */
+}
+
+/* Header / navigation */
+nav {
+  /* do not exceed parent width to avoid horizontal overflow inside .app */
+  max-width: 100%;
+  margin: 32px auto;
+  padding: 18px 24px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 30px rgba(15, 23, 32, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-left: 3px solid var(--accent);
+}
+
+nav a {
+  margin-left: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 13px;
+}
+
+nav a:hover {
+  background: rgba(30, 144, 255, 0.08);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo .mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #6ec1ff);
+  display: inline-block;
+}
+
+.logo h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Main layout: content + sidebar/toc */
+main {
+  /* constrain main to parent width to avoid layout overflow */
+  max-width: 100%;
+  margin: 0 auto;
+  display: grid;
+  /* grid-template-columns: 1fr 340px; */
+  gap: 24px;
+  align-items: start;
+  padding: 8px 0 40px;
+}
+
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.content-card {
+  background: var(--surface);
+  padding: 18px;
+  border-radius: 10px;
+}
+
+.lesson-section {
+  margin-bottom: 18px;
+}
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.lesson-card {
+  background: linear-gradient(180deg, #fff, #fbfdff);
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 32, 0.04);
+  box-shadow: 0 6px 18px rgba(15, 23, 32, 0.03);
+}
+
+.lesson-card h4 {
+  margin: 0 0 8px 0;
+}
+.lesson-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.toc {
+  border-left: 3px solid var(--accent);
+  padding: 14px 16px;
+  margin: 12px 0;
+  background: #fbfcff;
+  border-radius: 8px;
+}
+
+.toc strong {
+  display: block;
+  margin-bottom: 8px;
+}
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc li {
+  margin: 6px 0;
+}
+.toc a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Section cards for specific lesson lists */
+.section-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 32, 0.06);
+  box-shadow: 0 8px 24px rgba(15, 23, 32, 0.04);
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(15, 23, 32, 0.08);
+}
+
+.card-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.card-desc {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.card-meta {
+  margin-top: auto;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+  .section-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* small utilities */
+.muted {
+  color: var(--muted);
+}
+
+/* tweak react-syntax-highlighter container */
+/* neutral code fallback styles */
+.code-fallback {
+  background: #f6f8fa;
+  color: #111;
+  padding: 10px;
+  border-radius: 6px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono",
+    "Courier New", monospace;
+  font-size: 13px;
+}
+
+/* Lesson page styles */
+.lesson-hero {
+  padding: 22px 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(30, 144, 255, 0.06),
+    rgba(110, 193, 255, 0.03)
+  );
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+.lesson-hero-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: auto;
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 100%;
+}
+.lesson-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.lesson-title {
+  margin: 8px 0 6px 0;
+}
+.lesson-intro {
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.lesson-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.lesson-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 980px; /* match .app max-width to avoid growing past the main container */
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding-left: 12px;
+  padding-right: 12px;
+  overflow-x: hidden; /* prevent the page itself from expanding horizontally */
+}
+
+.lesson-top {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 320px);
+  gap: 20px;
+  align-items: start;
+}
+
+.lesson-layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 300px);
+  gap: 20px;
+  /* respect parent width to avoid overflowing outer .app */
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+.lesson-main {
+  background: var(--card-bg);
+  padding: 18px;
+  border-radius: 10px;
+  /* ensure the main content does not exceed parent's width */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Ensure main spans full width under lesson-top */
+.lesson-main {
+  grid-column: 1 / -1;
+}
+
+/* Prevent grid columns from forcing overflow by allowing them to shrink */
+.lesson-top > *,
+.lesson-layout > * {
+  min-width: 0;
+}
+
+/* Make sure lesson page respects container padding and prevents horizontal overflow */
+.lesson-page {
+  /* keep these rules in sync with the top-level definition */
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding-left: 12px;
+  padding-right: 12px;
+  overflow-x: hidden;
+}
+
+/* Content-level safety: avoid long tokens breaking layout */
+.lesson-section,
+.spec-card,
+.spec-intro,
+.spec-example {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Ensure code, pre and images do not overflow their containers */
+pre,
+code,
+.code-block.pretty,
+.code-fallback,
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* make each section stretch to the full width of the main column */
+.lesson-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+.lesson-sidebar {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.specific-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.spec-card {
+  padding: 14px;
+  background: linear-gradient(180deg, #fff, #fbfdff);
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 32, 0.04);
+}
+.spec-card {
+  /* prevent card contents from forcing layout width */
+  box-sizing: border-box;
+  word-break: break-word;
+}
+.spec-title {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+.spec-intro {
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.spec-example {
+  margin-top: 10px;
+  display: block;
+}
+
+/* Optional: utility class to collapse long sections (add class `.collapsed` to a .spec-card) */
+.spec-card.collapsed .spec-intro,
+.spec-card.collapsed .spec-example {
+  display: none;
+}
+.spec-card .collapse-hint {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* Simple highlighter token styles (dark theme) */
+.code-block.pretty {
+  background: #0b1220;
+  color: #e6eef6;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono",
+    "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre; /* preserve original newlines for highlighted blocks */
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+}
+.code-block.pretty .kw {
+  color: #c792ea;
+}
+.code-block.pretty .str {
+  color: #ecc48d;
+}
+.code-block.pretty .comment {
+  color: #546e7a;
+  font-style: italic;
+}
+.code-block.pretty .num {
+  color: #f78c6c;
+}
+.code-block.pretty .tag {
+  color: #7ccfff;
+}
+
+@media (max-width: 900px) {
+  /* Stack layout: hero + main content followed by sidebar */
+  .lesson-page {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .lesson-top {
+    grid-template-columns: 1fr; /* hero and sidebar stack vertically */
+    gap: 12px;
+  }
+
+  .lesson-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sidebar becomes part of the normal flow below the hero/main content */
+  .lesson-sidebar {
+    position: static;
+    order: 2;
+    width: 100%;
+  }
+
+  .lesson-hero {
+    order: 1;
+  }
+
+  /* Allow hero content to wrap on narrow screens */
+  .lesson-hero-inner {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: visible;
+    box-sizing: border-box;
+    flex: 1 1 auto; /* allow inner to size within parent without forcing 100% width */
+    max-width: 100%;
+  }
+
+  /* Prevent children from exceeding the hero-inner width and causing clipping */
+  .lesson-hero-inner > * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .lesson-badge {
+    margin-bottom: 0;
+    flex: 0 0 auto;
+  }
+
+  .lesson-title {
+    flex: 1 1 auto;
+    min-width: 0; /* allow to shrink inside flex */
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* make the intro span full width under the title when wrapping */
+  .lesson-hero-inner > .lesson-intro {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Ensure titles wrap generally and are not prevented by white-space rules */
+  .lesson-title {
+    white-space: normal;
+    word-break: break-word;
+  }
+  /* Reduce paddings for narrow screens */
+  .lesson-hero-inner {
+    padding: 12px;
+  }
+  .lesson-main {
+    padding: 12px;
+  }
+
+  /* TOC tweaks to avoid large left padding and overflow */
+  .toc {
+    padding: 12px;
+    border-left-width: 4px;
+    overflow-x: auto;
+  }
+
+  /* Ensure example blocks take full width and remain scrollable horizontally */
+  .spec-example {
+    margin-top: 10px;
+    display: block;
+    width: 100%;
+  }
+
+  .code-block.pretty,
+  .code-fallback {
+    font-size: 13px;
+    padding: 10px;
+    white-space: pre; /* preserve formatting but allow horizontal scroll */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Extra adjustments for very small screens */
+@media (max-width: 600px) {
+  .lesson-title {
+    font-size: 20px;
+    line-height: 1.15;
+  }
+  .lesson-intro {
+    font-size: 14px;
+  }
+
+  .spec-title {
+    font-size: 15px;
+  }
+
+  .code-block.pretty,
+  .code-fallback {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* On very small screens, stack hero-inner vertically so badge and title don't squeeze */
+  .lesson-hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .lesson-hero-inner > * {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .lesson-hero-inner .lesson-title {
+    flex: none;
+    width: 100%;
+  }
+
+  /* Make sure section cards and lists occupy full width comfortably */
+  .section-cards,
+  .lesson-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------- */
+/* Overflow guard & debug */
+/* Estas reglas ayudan a contener cualquier caja que esté forzando ancho mayor */
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden; /* fuerza ocultar cualquier scroll horizontal inesperado */
+}
+
+.lesson-page {
+  /* refuerzo: no permitir que la página supere el viewport */
+  width: 100%;
+  max-width: min(980px, 100vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* helper temporal: descomentar para ver contenedores que causan overflow */
+/* .debug-overflow * { outline: 1px solid rgba(255,0,0,0.06); } */
+
+/* Recomendación: si el overflow persiste, activa la clase .debug-overflow en el body
+   para ver qué elemento está saliéndose del contenedor y me lo compartes. */
