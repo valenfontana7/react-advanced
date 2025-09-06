@@ -14,6 +14,8 @@ body {
   color: #111;
   margin: 0;
   padding: 0;
+  /* espacio para header fijo */
+  padding-top: 76px;
 }
 
 /* Make sizing predictable and prevent children from escaping container widths */
@@ -24,8 +26,8 @@ body {
 }
 
 .app {
-  max-width: 980px;
-  margin: 26px auto;
+  max-width: 1080px;
+  margin: 38px auto 0px auto;
   padding: 18px;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
@@ -34,11 +36,241 @@ body {
   overflow-x: hidden; /* prevent children from causing horizontal scroll */
 }
 
+/* Header and navigation improvements */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0px 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(250, 250, 252, 0.95)
+  );
+  border-radius: 0;
+  box-shadow: 0 6px 22px rgba(15, 23, 32, 0.08);
+  z-index: 1000;
+  border-left: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.nav-link {
+  color: var(--accent);
+  text-decoration: none;
+  padding: 0px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.nav-link:hover {
+  background: rgba(30, 144, 255, 0.08);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 32, 0.06);
+  background: var(--card-bg);
+  color: var(--text);
+
+  /* Transiciones suaves para la UI (excepto tarjetas .card) */
+  :root {
+    --ui-transition: 180ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+
+  .nav-link,
+  .btn,
+  .overview-link,
+  .home-hero,
+  .lesson-hero,
+  .lesson-main,
+  .toc a,
+  .spec-card,
+  .section-cards,
+  .lesson-hero-inner {
+    transition: background var(--ui-transition), color var(--ui-transition),
+      transform var(--ui-transition), box-shadow var(--ui-transition);
+  }
+
+  /* Explicitamente desactivar transiciones para las cards de lecciones */
+  .card {
+    transition: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link,
+    .btn,
+    .overview-link,
+    .home-hero,
+    .lesson-hero,
+    .lesson-main,
+    .toc a,
+    .spec-card,
+    .section-cards,
+    .lesson-hero-inner,
+    .card {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* ------------------ */
+  /* Micro-animaciones */
+  /* ------------------ */
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes subtlePop {
+    0% {
+      transform: scale(0.98);
+      opacity: 0.96;
+    }
+    60% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Apply gentle entrance to main sections and hero */
+  .home-hero,
+  .lesson-hero-inner,
+  .lesson-main,
+  .section-cards,
+  .toc {
+    opacity: 0;
+    transform: translateY(6px);
+    animation: fadeInUp 320ms cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+  }
+
+  /* Cross-fade wrapper for lesson content */
+  .fade-wrapper {
+    transition: opacity 260ms cubic-bezier(0.2, 0.9, 0.2, 1),
+      transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+  .fade-wrapper.hidden {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+  .fade-wrapper.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Slight delay for subsections to feel layered */
+  .section-cards {
+    animation-delay: 100ms;
+  }
+  .lesson-main {
+    animation-delay: 60ms;
+  }
+  .lesson-hero-inner {
+    animation-delay: 40ms;
+  }
+
+  /* Buttons micro-pop on mount and hover scale */
+  .btn {
+    animation: subtlePop 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  }
+  .btn:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  /* Nav link underline animation */
+  .nav-link {
+    position: relative;
+    overflow: visible;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 6px;
+    height: 2px;
+    background: transparent;
+    border-radius: 2px;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 220ms cubic-bezier(0.2, 0.9, 0.2, 1), background 220ms;
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+    background: rgba(30, 144, 255, 0.14);
+  }
+
+  /* Avoid animating cards (explicit) */
+  .section-cards > .card {
+    will-change: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero,
+    .lesson-hero-inner,
+    .lesson-main,
+    .section-cards,
+    .toc,
+    .btn,
+    .nav-link::after {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+  }
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn.primary {
+  background: linear-gradient(90deg, var(--accent), #6ec1ff);
+  color: white;
+  border: none;
+}
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(15, 23, 32, 0.06);
+}
+
+/* Footer */
+.site-footer {
+  margin-top: 20px;
+  padding: 12px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 /* Header / navigation */
 nav {
   /* do not exceed parent width to avoid horizontal overflow inside .app */
   max-width: 100%;
-  margin: 32px auto;
+  margin: 18px auto;
   padding: 18px 24px;
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -183,6 +415,117 @@ main {
 .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 16px 40px rgba(15, 23, 32, 0.08);
+}
+
+/* small utility: overview links on home */
+.overview-links {
+  display: flex;
+  gap: 18px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.overview-link {
+  display: block;
+  padding: 14px 18px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text);
+  min-width: 220px;
+  box-shadow: 0 8px 20px rgba(15, 23, 32, 0.03);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.overview-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(15, 23, 32, 0.06);
+}
+.overview-title {
+  margin: 0;
+  font-size: 18px;
+}
+.overview-desc {
+  margin: 6px 0 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Counter */
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.counter-controls {
+  display: inline-flex;
+  gap: 8px;
+}
+
+/* Home hero */
+.home-hero {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 144, 255, 0.06),
+    rgba(110, 193, 255, 0.03)
+  );
+  padding: 22px 18px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-left {
+  flex: 1 1 60%;
+  min-width: 0;
+}
+.hero-title {
+  margin: 0;
+  font-size: 22px;
+}
+.hero-subtitle {
+  margin: 8px 0 0 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+.hero-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.search-input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 32, 0.06);
+  background: white;
+  min-width: 220px;
+}
+.hero-stats {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.stat {
+  background: white;
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(15, 23, 32, 0.03);
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .home-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-left {
+    width: 100%;
+  }
+  .hero-stats {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 
 .card-title {
@@ -603,7 +946,7 @@ body {
 .lesson-page {
   /* refuerzo: no permitir que la página supere el viewport */
   width: 100%;
-  max-width: min(980px, 100vw);
+  max-width: min(1080px, 100vw);
   margin-left: auto;
   margin-right: auto;
 }
